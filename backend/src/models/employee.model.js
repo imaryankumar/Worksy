@@ -44,7 +44,7 @@ const employeeProfileSchema = new mongoose.Schema(
       contractType: {
         type: String,
         enum: ["Permanent", "Contractual"],
-        required: true,
+        default: "Permanent",
       },
     },
     leaveBalance: { type: Number, default: 24 },

@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import Company from "../models/company.model.js";
 import User from "../models/user.model.js";
 import EmployeeProfile from "../models/employee.model.js";
+import { getCompanyToken, getUserToken } from "../utils/getToken.js";
 
 export const createCompany = asyncHandler(async (req, res) => {
   const {
@@ -32,24 +33,34 @@ export const createCompany = asyncHandler(async (req, res) => {
     !companyPhone ||
     !gender
   ) {
-    res.status(400);
-    throw new Error("All fields are required");
+    return res.status(400).json({
+      success: false,
+      message: "All fields are required",
+    });
   }
 
   // Check company
   const existingCompany = await Company.findOne({
-    $or: [{ email: companyEmail.toLowerCase() }, { gstNumber }],
+    $or: [
+      { email: companyEmail.toLowerCase() },
+      { gstNumber },
+      { phone: companyPhone },
+    ],
   });
   if (existingCompany) {
-    res.status(400);
-    throw new Error("Company email or GST number already in use");
+    return res.status(400).json({
+      success: false,
+      message: "Company email,phone or GST number already in use",
+    });
   }
 
   // Check user
   const existingUser = await User.findOne({ email: ownerEmail.toLowerCase() });
   if (existingUser) {
-    res.status(400);
-    throw new Error("User email already in use");
+    return res.status(400).json({
+      success: false,
+      message: "User email already in use",
+    });
   }
 
   // Hash password
@@ -88,24 +99,32 @@ export const createCompany = asyncHandler(async (req, res) => {
   });
   await owner.save();
 
+  const userToken = await getUserToken(owner._id, res);
+  const companyToken = await getCompanyToken(company._id, res);
+
   // Update company with ownerId
   company.ownerUserId = owner._id;
   await company.save();
+
+  const employeeCode = `EMP${String(owner._id).slice(-4).toUpperCase()}`;
 
   // Create EmployeeProfile
   const employeeProfile = new EmployeeProfile({
     userId: owner._id,
     companyId: company._id,
     gender,
-    employeeCode: "EMP001",
+    employeeCode: employeeCode,
     designation: "Founder/Admin",
     companyDetails: { contractType: "Permanent" },
   });
   await employeeProfile.save();
 
-  res.status(201).json({
+  return res.status(201).json({
+    success: true,
     message: "Company and owner created successfully",
     company,
+    userToken,
+    companyToken,
     owner: owner.toJSON(),
   });
 });

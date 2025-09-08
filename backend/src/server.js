@@ -1,4 +1,5 @@
 import express from "express";
+import CookieParser from "cookie-parser";
 import { ENV } from "./config/env.js";
 import connectDB from "./config/dbConnect.js";
 
@@ -12,6 +13,7 @@ const app = express();
 // Middleware to parse JSON requests
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(CookieParser());
 
 // routes
 app.use("/api/v1/companies", companyRoutes);
@@ -25,7 +27,7 @@ app.get("/", (req, res) => {
 
 // Error handling middleware
 app.use((err, req, res, next) => {
-  console.error(err.message);
+  console.error(err.stack);
   res.status(500).send(err.message || "Internal Server Error");
 });
 
