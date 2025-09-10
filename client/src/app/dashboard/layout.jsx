@@ -8,17 +8,15 @@ export const metadata = {
 
 const DashboardLayout = ({ children }) => {
   return (
-    <div className="w-full h-screen flex overflow-hidden">
-      <aside className="hidden md:block w-1/6 h-full bg-gray-50">
+    <div className="flex h-screen overflow-hidden bg-gray-50 dark:bg-gray-900">
+      <aside className="hidden md:flex md:flex-col w-64 bg-white dark:bg-gray-800">
         <AsideNavbar />
       </aside>
-      <div className="flex-1 h-full flex flex-col">
-        <header className="h-20 bg-gray-50 border-b flex items-center px-4 sticky top-0 z-10">
+      <div className="flex-1 flex flex-col">
+        <header className="bg-white h-20 flex items-center px-4 md:px-6">
           <Navbar />
         </header>
-        <main className="flex-1 overflow-y-auto px-6 py-4 bg-white">
-          {children}
-        </main>
+        <main className="flex-1 overflow-y-auto p-6">{children}</main>
       </div>
     </div>
   );

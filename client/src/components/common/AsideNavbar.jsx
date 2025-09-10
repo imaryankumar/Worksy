@@ -12,19 +12,12 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
 
 const AsideNavbar = () => {
-  const pathname = usePathname().slice(1);
-  const [activeRouteId, setActiveRouteId] = useState(pathname);
+  const pathname = usePathname().replace("/", "");
 
   const routes = [
-    {
-      id: 1,
-      label: "Overview",
-      url: "overview",
-      icon: <PieChart size={22} />,
-    },
+    { id: 1, label: "Overview", url: "overview", icon: <PieChart size={22} /> },
     {
       id: 2,
       label: "Leaves",
@@ -37,58 +30,33 @@ const AsideNavbar = () => {
       url: "worklogs",
       icon: <Briefcase size={22} />,
     },
-    {
-      id: 4,
-      label: "Attendance",
-      url: "attendance",
-      icon: <Book size={22} />,
-    },
+    { id: 4, label: "Attendance", url: "attendance", icon: <Book size={22} /> },
     {
       id: 5,
       label: "Inventory",
       url: "inventory",
       icon: <Package size={22} />,
     },
-    {
-      id: 6,
-      label: "Profile",
-      url: "profile",
-      icon: <User size={22} />,
-    },
+    { id: 6, label: "Profile", url: "profile", icon: <User size={22} /> },
   ];
 
-  const handleRouteChange = (id) => {
-    setActiveRouteId(id);
-  };
-
   return (
-    <div className="relative flex flex-col justify-between h-full py-5">
-      <div className="flex flex-col gap-10 items-center justify-start">
-        <div className="px-12">
-          <Image
-            src={CONSTANTS.LOGO}
-            alt="Company Logo"
-            className="blend-image"
-            priority
-          />
+    <div className="flex flex-col justify-between h-full py-5">
+      <div className="flex flex-col gap-10 items-center">
+        <div className="px-4">
+          <Image src={CONSTANTS.LOGO} alt="Company Logo" priority />
         </div>
         <nav className="flex flex-col gap-3 w-full px-5">
           {routes.map((route) => {
-            const isActive = activeRouteId === route.url;
+            const isActive = pathname === route.url;
             return (
-              <Link
-                key={route.id}
-                href={route.url}
-                aria-current={isActive ? "page" : undefined}
-              >
+              <Link key={route.id} href={`/${route.url}`}>
                 <div
-                  onClick={() => handleRouteChange(route.url)}
-                  className={`flex items-center gap-3 py-2 px-6 cursor-pointer rounded-md transition-colors duration-200 
-                    ${
-                      isActive
-                        ? "bg-black text-white shadow-md"
-                        : "text-gray-600 hover:bg-gray-200"
-                    }`}
+                  className={`flex items-center gap-3 py-2 px-4 rounded-md cursor-pointer transition-colors duration-200 ${
+                    isActive
+                      ? "bg-black text-white shadow-md"
+                      : "text-gray-600 hover:bg-gray-200 dark:text-gray-300 dark:hover:bg-gray-700"
+                  }`}
                 >
                   <span>{route.icon}</span>
                   <span className="text-lg font-medium capitalize">
@@ -101,7 +69,7 @@ const AsideNavbar = () => {
         </nav>
       </div>
       <div className="px-5 mt-6">
-        <div className="flex items-center gap-4 p-3 border rounded-xl shadow-sm hover:shadow-md transition">
+        <div className="flex items-center gap-4 p-3 border-none rounded-xl shadow-sm hover:shadow-md transition bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600">
           <Image
             src={CONSTANTS.LOGO}
             alt="User Profile"
@@ -109,12 +77,16 @@ const AsideNavbar = () => {
             height={45}
             className="rounded-full object-cover"
           />
-          <div className="flex flex-col">
-            <span className="font-semibold text-sm text-gray-800">
+          <div className="flex flex-col truncate">
+            <span className="font-semibold text-sm text-gray-800 dark:text-gray-200">
               Aryan Kumar
             </span>
-            <span className="text-xs text-gray-500">Frontend Engineer</span>
-            <span className="text-xs text-gray-400">aryan@example.com</span>
+            <span className="text-xs text-gray-500 dark:text-gray-400">
+              Frontend Engineer
+            </span>
+            <span className="text-xs text-gray-400 dark:text-gray-500">
+              aryan@example.com
+            </span>
           </div>
         </div>
       </div>

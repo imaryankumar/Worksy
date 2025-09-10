@@ -17,8 +17,8 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
-      <body className={`${outfit.variable}`}>
+    <html lang="en" className={outfit.variable}>
+      <body>
         <QueryProvider>
           <main>{children}</main>
           <Toaster position="top-center" />

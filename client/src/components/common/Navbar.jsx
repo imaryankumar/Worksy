@@ -15,23 +15,27 @@ export default function Navbar({ username = "John Doe", onLogout }) {
   const { theme, setTheme } = useTheme();
 
   return (
-    <nav className="w-full flex items-center justify-between h-16 px-4 md:px-6">
-      <div className="flex-1 flex items-center max-w-2xl">
-        <div className="flex w-full items-center px-4 py-3 relative shadow-sm border rounded-3xl bg-background">
-          <Search size={20} className="text-muted-foreground mr-2" />
+    <nav className="w-full flex items-center justify-between">
+      {/* Search */}
+      <div className="flex-1 max-w-xl">
+        <div className="flex items-center w-full px-5 py-3 justify-center rounded-3xl shadow bg-gray-50">
+          <Search size={20} className="text-gray-400 mr-2" />
           <input
             type="text"
-            className="w-full border-none bg-transparent outline-none text-sm"
+            className="w-full border-none bg-transparent outline-none text-sm text-gray-700 dark:text-gray-200"
             placeholder="Search here"
           />
         </div>
       </div>
+
+      {/* Actions */}
       <div className="flex items-center gap-3 md:gap-6 ml-4">
+        {/* Notification */}
         <div className="relative">
           <Button
             variant="outline"
             size="icon"
-            className="rounded-full relative"
+            className="rounded-full bg-gray-50 !border-none"
             aria-label="Notifications"
           >
             <Bell className="h-5 w-5" />
@@ -40,10 +44,12 @@ export default function Navbar({ username = "John Doe", onLogout }) {
             0
           </span>
         </div>
+
+        {/* Theme Toggle */}
         <Button
           variant="outline"
           size="icon"
-          className="rounded-full"
+          className="rounded-full bg-gray-50 !border-none"
           onClick={() => setTheme(theme === "light" ? "dark" : "light")}
           aria-label="Toggle theme"
         >
@@ -53,14 +59,14 @@ export default function Navbar({ username = "John Doe", onLogout }) {
             <Sun className="h-5 w-5" />
           )}
         </Button>
+
+        {/* Profile Dropdown */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <div className="flex items-center gap-2 cursor-pointer">
-              <Avatar className="h-9 w-9 border">
+              <Avatar className="h-9 w-9 bg-gray-50">
                 <AvatarImage src="/placeholder-user.jpg" alt={username} />
-                <AvatarFallback>
-                  {username.slice(0, 1).toUpperCase()}
-                </AvatarFallback>
+                <AvatarFallback>{username[0].toUpperCase()}</AvatarFallback>
               </Avatar>
               <span className="hidden md:block font-medium truncate max-w-[120px]">
                 {username}
@@ -70,8 +76,7 @@ export default function Navbar({ username = "John Doe", onLogout }) {
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start" className="w-40">
             <DropdownMenuItem onClick={onLogout}>
-              <LogOut className="mr-2 h-4 w-4" />
-              <span>Logout</span>
+              <LogOut className="mr-2 h-4 w-4" /> Logout
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
