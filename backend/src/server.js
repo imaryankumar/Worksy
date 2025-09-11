@@ -1,5 +1,8 @@
 import express from "express";
 import CookieParser from "cookie-parser";
+import rateLimit from "express-rate-limit";
+import helmet from "helmet";
+import Cors from "cors";
 import { ENV } from "./config/env.js";
 import connectDB from "./config/dbConnect.js";
 
@@ -10,10 +13,36 @@ import employeeRoutes from "./routes/employee.route.js";
 
 const app = express();
 
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  message: "Too many requests, please try again later.",
+});
+
+const allowedOrigins =
+  process.env.NODE_ENV === "development"
+    ? ["http://localhost:3000"]
+    : ["https://worksy-xi.vercel.app"];
+
 // Middleware to parse JSON requests
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(CookieParser());
+app.use(
+  helmet({
+    crossOriginResourcePolicy: false,
+    crossOriginEmbedderPolicy: false,
+  })
+);
+app.use(limiter);
+app.use(
+  Cors({
+    origin: allowedOrigins,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+  })
+);
 
 // routes
 app.use("/api/v1/companies", companyRoutes);

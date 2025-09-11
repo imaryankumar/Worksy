@@ -77,3 +77,60 @@ export const registerUser = asyncHandler(async (req, res) => {
     employee: employee.toJSON(),
   });
 });
+
+export const loginUser = asyncHandler(async (req, res) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    return res.status(400).json({
+      success: false,
+      message: "All fields are required",
+    });
+  }
+
+  const existingUser = await User.findOne({ email: email.toLowerCase() });
+  if (!existingUser) {
+    return res.status(400).json({
+      success: false,
+      message: "User doesn't register",
+    });
+  }
+
+  const comparePass = await bcrypt.compare(password, existingUser.passwordHash);
+  if (!comparePass) {
+    return res.status(400).json({
+      success: false,
+      message: "Invalid email or password!",
+    });
+  }
+
+  const userToken = await getUserToken(existingUser._id, res);
+
+  return res.status(200).json({
+    success: true,
+    userToken,
+    user: {
+      name: existingUser.name,
+      email: existingUser.email,
+      role: existingUser.role,
+      profilePic: existingUser.profileImage,
+    },
+    message: "User login successfully",
+  });
+});
+
+export const logoutUser = asyncHandler(async (req, res) => {
+  const cookieOptions = {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+    path: "/",
+  };
+  res.clearCookie("userToken", cookieOptions);
+  res.clearCookie("companyToken", cookieOptions);
+  return res.status(200).json({
+    success: true,
+    message: "Logout successfully!",
+    loggedOut: true,
+  });
+});

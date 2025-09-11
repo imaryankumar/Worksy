@@ -1,19 +1,21 @@
+// middleware.js
 import { NextResponse } from "next/server";
 
 const PUBLIC_PAGES = ["/", "/login", "/company-register"];
 
 export function middleware(req) {
   const url = req.nextUrl.clone();
-  const pathname = url.pathname;
-  const token = req.cookies.get("token")?.value;
+  const pathname = url.pathname.replace(/\/$/, "");
 
-  // logged-in users should not see public pages
+  const token = req.cookies.get("userToken")?.value;
+
+  // Logged-in user visiting public page → redirect to /overview
   if (token && PUBLIC_PAGES.includes(pathname)) {
-    url.pathname = "/";
+    url.pathname = "/overview";
     return NextResponse.redirect(url);
   }
 
-  // logged-out users should not see private pages
+  // Not logged-in user visiting private page → redirect to /login
   if (!token && !PUBLIC_PAGES.includes(pathname)) {
     url.pathname = "/login";
     return NextResponse.redirect(url);
@@ -23,5 +25,7 @@ export function middleware(req) {
 }
 
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
+  matcher: [
+    "/((?!_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)",
+  ],
 };

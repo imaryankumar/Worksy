@@ -1,7 +1,6 @@
 import { Outfit } from "next/font/google";
-import QueryProvider from "./providers/QueryProvider";
-import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
+import AppProviders from "@/components/common/AppProviders";
 
 const outfit = Outfit({
   variable: "--font-outfit",
@@ -19,10 +18,9 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className={outfit.variable}>
       <body>
-        <QueryProvider>
+        <AppProviders>
           <main>{children}</main>
-          <Toaster position="top-center" />
-        </QueryProvider>
+        </AppProviders>
       </body>
     </html>
   );

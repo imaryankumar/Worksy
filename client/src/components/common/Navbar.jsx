@@ -2,6 +2,9 @@
 
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
+import Cookies from "js-cookie";
+import { useDispatch } from "react-redux";
+import { useRouter } from "next/navigation";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -10,9 +13,21 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Bell, Sun, Moon, ChevronDown, LogOut, Search } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { logoutUserAPI } from "@/store/slices/authSlice/getAuthSlice";
 
 export default function Navbar({ username = "John Doe", onLogout }) {
   const { theme, setTheme } = useTheme();
+  const dispatch = useDispatch();
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    try {
+      await dispatch(logoutUserAPI()).unwrap();
+      router.push("/login");
+    } catch (err) {
+      console.error("Logout failed", err);
+    }
+  };
 
   return (
     <nav className="w-full flex items-center justify-between">
@@ -75,7 +90,7 @@ export default function Navbar({ username = "John Doe", onLogout }) {
             </div>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start" className="w-40">
-            <DropdownMenuItem onClick={onLogout}>
+            <DropdownMenuItem onClick={handleLogout}>
               <LogOut className="mr-2 h-4 w-4" /> Logout
             </DropdownMenuItem>
           </DropdownMenuContent>
