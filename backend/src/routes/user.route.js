@@ -4,7 +4,6 @@ import {
   logoutUser,
   registerUser,
 } from "../controllers/user.controller.js";
-import RoleBased from "../middlewares/rolebased.middleware.js";
 import ProtectRoute from "../middlewares/protectRoute.middleware.js";
 
 const routes = express.Router();
