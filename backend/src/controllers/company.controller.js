@@ -16,7 +16,6 @@ export const createCompany = asyncHandler(async (req, res) => {
     ownerPhone,
     address,
     password,
-    role, // should always be "Admin"
     gender,
   } = req.body;
 
@@ -27,7 +26,6 @@ export const createCompany = asyncHandler(async (req, res) => {
     !ownerEmail ||
     !ownerName ||
     !password ||
-    !role ||
     !gstNumber ||
     !ownerPhone ||
     !companyPhone ||

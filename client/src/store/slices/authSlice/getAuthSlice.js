@@ -3,14 +3,13 @@ import axiosInstance from "@/lib/axiosInstance";
 import Cookies from "js-cookie";
 import { initialState } from "./common";
 
-// Login
+// ✅ Login
 export const loginUser = createAsyncThunk(
   "auth/loginUser",
   async (credentials, { rejectWithValue }) => {
     try {
       const res = await axiosInstance.post("/api/v1/user/login", credentials);
 
-      // Store userToken
       if (res.data?.userToken) {
         Cookies.set("userToken", res.data.userToken, {
           expires: 7,
@@ -19,7 +18,6 @@ export const loginUser = createAsyncThunk(
         });
       }
 
-      // Store companyToken if available
       if (res.data?.companyToken) {
         Cookies.set("companyToken", res.data.companyToken, {
           expires: 7,
@@ -28,12 +26,10 @@ export const loginUser = createAsyncThunk(
         });
       }
 
-      // Store user data
       if (res.data?.user) {
         localStorage.setItem("user", JSON.stringify(res.data.user));
       }
 
-      // Store company data if available
       if (res.data?.company) {
         localStorage.setItem("company", JSON.stringify(res.data.company));
       }
@@ -45,17 +41,17 @@ export const loginUser = createAsyncThunk(
   }
 );
 
-// Company Registration
+// ✅ Company Registration
 export const registerCompany = createAsyncThunk(
   "auth/registerCompany",
   async (registrationData, { rejectWithValue }) => {
     try {
+      const { role, ...payload } = registrationData;
       const res = await axiosInstance.post(
-        "/api/v1/company/register",
-        registrationData
+        "/api/v1/companies/register",
+        payload
       );
 
-      // Store both tokens after successful registration
       if (res.data?.userToken) {
         Cookies.set("userToken", res.data.userToken, {
           expires: 7,
@@ -72,12 +68,10 @@ export const registerCompany = createAsyncThunk(
         });
       }
 
-      // Store user data (owner)
       if (res.data?.owner) {
         localStorage.setItem("user", JSON.stringify(res.data.owner));
       }
 
-      // Store company data
       if (res.data?.company) {
         localStorage.setItem("company", JSON.stringify(res.data.company));
       }
@@ -91,7 +85,7 @@ export const registerCompany = createAsyncThunk(
   }
 );
 
-// Logout
+// ✅ Logout
 export const logoutUserAPI = createAsyncThunk(
   "auth/logoutUserAPI",
   async (_, { dispatch, rejectWithValue }) => {
@@ -114,10 +108,8 @@ const authSlice = createSlice({
     logoutUser: (state) => {
       state.user = null;
       state.company = null;
-      // Remove both tokens
       Cookies.remove("userToken");
       Cookies.remove("companyToken");
-      // Remove stored data
       localStorage.removeItem("user");
       localStorage.removeItem("company");
     },
@@ -128,7 +120,6 @@ const authSlice = createSlice({
       if (storedUser) {
         state.user = JSON.parse(storedUser);
       }
-
       if (storedCompany) {
         state.company = JSON.parse(storedCompany);
       }
@@ -136,7 +127,7 @@ const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // Login cases
+      // Login
       .addCase(loginUser.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -152,14 +143,13 @@ const authSlice = createSlice({
         state.loading = false;
         state.error = action.payload?.message || "Login failed";
       })
-      // Registration cases
+      // Registration
       .addCase(registerCompany.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(registerCompany.fulfilled, (state, action) => {
         state.loading = false;
-        // Set user from owner data in registration response
         state.user = action.payload.owner;
         state.company = action.payload.company;
       })
@@ -167,7 +157,7 @@ const authSlice = createSlice({
         state.loading = false;
         state.error = action.payload?.message || "Registration failed";
       })
-      // Logout cases
+      // Logout
       .addCase(logoutUserAPI.rejected, (state, action) => {
         state.error = action.payload?.message || "Logout failed";
       });
