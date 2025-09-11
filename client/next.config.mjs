@@ -1,5 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  images: {
+    domains: ["avatar.iran.liara.run"],
+  },
   async rewrites() {
     return [
       { source: "/overview", destination: "/dashboard/overview" },

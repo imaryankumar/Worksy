@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { CONSTANTS } from "@/lib/constants";
 import {
   Book,
@@ -15,6 +16,14 @@ import { usePathname } from "next/navigation";
 
 const AsideNavbar = () => {
   const pathname = usePathname().replace("/", "");
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
 
   const routes = [
     { id: 1, label: "Overview", url: "overview", icon: <PieChart size={22} /> },
@@ -44,7 +53,7 @@ const AsideNavbar = () => {
     <div className="flex flex-col justify-between h-full py-5">
       <div className="flex flex-col gap-10 items-center">
         <div className="px-4">
-          <Image src={CONSTANTS.LOGO} alt="Company Logo" priority />
+          <Image src={CONSTANTS?.LOGO} alt="Company Logo" priority />
         </div>
         <nav className="flex flex-col gap-3 w-full px-5">
           {routes.map((route) => {
@@ -68,28 +77,30 @@ const AsideNavbar = () => {
           })}
         </nav>
       </div>
-      <div className="px-5 mt-6">
-        <div className="flex items-center gap-4 p-3 border-none rounded-xl shadow-sm hover:shadow-md transition bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600">
-          <Image
-            src={CONSTANTS.LOGO}
-            alt="User Profile"
-            width={45}
-            height={45}
-            className="rounded-full object-cover"
-          />
-          <div className="flex flex-col truncate">
-            <span className="font-semibold text-sm text-gray-800 dark:text-gray-200">
-              Aryan Kumar
-            </span>
-            <span className="text-xs text-gray-500 dark:text-gray-400">
-              Frontend Engineer
-            </span>
-            <span className="text-xs text-gray-400 dark:text-gray-500">
-              aryan@example.com
-            </span>
+      {user && (
+        <div className="px-5 mt-6">
+          <div className="flex items-center gap-4 p-3 rounded-xl shadow-sm hover:shadow-md bg-gray-100">
+            <Image
+              src={user?.profilePic || CONSTANTS?.LOGO}
+              alt="User Profile"
+              width={45}
+              height={45}
+              className="rounded-full object-cover"
+            />
+            <div className="flex flex-col truncate">
+              <span className="font-semibold text-sm text-gray-800 dark:text-gray-200">
+                {user?.name}
+              </span>
+              <span className="text-xs text-gray-500 dark:text-gray-400">
+                {user?.role}
+              </span>
+              <span className="text-xs text-gray-400 dark:text-gray-500">
+                {user?.email}
+              </span>
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };
