@@ -2,7 +2,7 @@ import asyncHandler from "express-async-handler";
 import User from "../models/user.model.js";
 import bcrypt from "bcryptjs";
 import EmployeeProfile from "../models/employee.model.js";
-import { getUserToken } from "../utils/getToken.js";
+import { getCompanyToken, getUserToken } from "../utils/getToken.js";
 import mongoose from "mongoose";
 
 export const registerUser = asyncHandler(async (req, res) => {
@@ -105,10 +105,12 @@ export const loginUser = asyncHandler(async (req, res) => {
   }
 
   const userToken = await getUserToken(existingUser._id, res);
+  const companyToken = await getCompanyToken(existingUser.companyId, res);
 
   return res.status(200).json({
     success: true,
     userToken,
+    companyToken,
     user: {
       name: existingUser.name,
       email: existingUser.email,
@@ -132,5 +134,15 @@ export const logoutUser = asyncHandler(async (req, res) => {
     success: true,
     message: "Logout successfully!",
     loggedOut: true,
+  });
+});
+
+export const getUsers = asyncHandler(async (req, res) => {
+  const allusers = await User.find({});
+  return res.status(200).json({
+    success: true,
+    allusers,
+    totalCount: allusers.length,
+    message: "Users fetched successfully",
   });
 });

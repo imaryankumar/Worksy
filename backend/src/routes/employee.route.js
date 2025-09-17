@@ -1,10 +1,10 @@
 import express from "express";
+import ProtectRoute from "../middlewares/protectRoute.middleware.js";
+import { getEmployees } from "../controllers/employee.controller.js";
 
 const routes = express.Router();
 
 // Sample user route
-routes.get("/", (req, res) => {
-  res.json({ message: "Employee route works!" });
-});
+routes.get("/", ProtectRoute, getEmployees);
 
 export default routes;

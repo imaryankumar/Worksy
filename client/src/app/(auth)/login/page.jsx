@@ -62,20 +62,20 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4 relative">
+      <div className="absolute left-4 top-2 w-48 h-16 mx-auto">
+        <Image
+          src={CONSTANTS.LOGO}
+          alt="Worksy - Smart Employee Management Platform"
+          fill
+          className="object-contain"
+          priority
+        />
+      </div>
       <div className="w-full max-w-md">
         {/* Logo Section with Enhanced Marketing Copy */}
         <div className="text-center w-full mb-8">
-          <div className="relative w-52 h-20 mx-auto">
-            <Image
-              src={CONSTANTS.LOGO}
-              alt="Worksy - Smart Employee Management Platform"
-              fill
-              className="object-contain"
-              priority
-            />
-          </div>
-          <h1 className="text-2xl font-bold text-gray-800 mt-4 mb-2">
+          <h1 className="text-3xl font-bold text-blue-700 mb-6">
             Transform Your Workforce
           </h1>
           <p className="text-gray-500 text-sm mt-2 leading-relaxed">

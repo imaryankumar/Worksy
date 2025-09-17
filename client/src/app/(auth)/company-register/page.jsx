@@ -136,20 +136,20 @@ const CompanyRegister = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center p-4 relative">
+      <div className="absolute top-2 left-4 w-48 h-16 mx-auto">
+        <Image
+          src={CONSTANTS.LOGO}
+          alt="Worksy - Smart Employee Management Platform"
+          fill
+          className="object-contain"
+          priority
+        />
+      </div>
       <div className="w-full max-w-2xl">
         {/* Logo & Header Section */}
         <div className="text-center w-full mb-6">
-          <div className="relative w-48 h-16 mx-auto">
-            <Image
-              src={CONSTANTS.LOGO}
-              alt="Worksy - Smart Employee Management Platform"
-              fill
-              className="object-contain"
-              priority
-            />
-          </div>
-          <h1 className="text-3xl font-bold text-gray-800 mt-3 mb-1">
+          <h1 className="text-4xl font-bold text-blue-700 mt-3 mb-6">
             Join Worksy Today
           </h1>
           <p className="text-gray-600 text-sm mt-1 leading-relaxed max-w-xl mx-auto">
