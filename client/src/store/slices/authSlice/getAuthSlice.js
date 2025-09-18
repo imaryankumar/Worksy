@@ -116,7 +116,6 @@ const authSlice = createSlice({
     restoreUser: (state) => {
       const storedUser = localStorage.getItem("user");
       const storedCompany = localStorage.getItem("company");
-
       if (storedUser) {
         state.user = JSON.parse(storedUser);
       }

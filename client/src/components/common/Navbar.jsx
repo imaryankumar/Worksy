@@ -2,7 +2,7 @@
 
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import {
   DropdownMenu,
@@ -12,28 +12,21 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Bell, Sun, Moon, ChevronDown, LogOut, Search } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { logoutUserAPI } from "@/store/slices/authSlice/getAuthSlice";
-import { useEffect, useState } from "react";
+import {
+  logoutUserAPI,
+  restoreUser,
+} from "@/store/slices/authSlice/getAuthSlice";
+import { useEffect } from "react";
 
 export default function Navbar({ onLogout }) {
   const { theme, setTheme } = useTheme();
-  const dispatch = useDispatch();
   const router = useRouter();
-  const [user, setUser] = useState({
-    name: "John Doe",
-    profilePic: "/placeholder-user.jpg",
-  });
 
+  const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.auth);
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      const parsedUser = JSON.parse(storedUser);
-      setUser({
-        name: parsedUser.name || "John Doe",
-        profilePic: parsedUser.profilePic || "/placeholder-user.jpg",
-      });
-    }
-  }, []);
+    dispatch(restoreUser());
+  }, [dispatch]);
 
   const handleLogout = async () => {
     try {
@@ -96,11 +89,11 @@ export default function Navbar({ onLogout }) {
           <DropdownMenuTrigger asChild>
             <div className="flex items-center gap-2 cursor-pointer">
               <Avatar className="h-9 w-9 bg-gray-100">
-                <AvatarImage src={user.profilePic} alt={user.name} />
-                <AvatarFallback>{user.name[0].toUpperCase()}</AvatarFallback>
+                <AvatarImage src={user?.profilePic} alt={user?.name} />
+                <AvatarFallback>{user?.name[0]?.toUpperCase()}</AvatarFallback>
               </Avatar>
               <span className="hidden md:block font-medium truncate max-w-[120px]">
-                {user.name}
+                {user?.name}
               </span>
               <ChevronDown className="h-4 w-4 hidden md:block" />
             </div>

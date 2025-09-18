@@ -13,8 +13,7 @@ export const registerUser = asyncHandler(async (req, res) => {
       message: "All fields are required",
     });
   }
-
-  if (!mongoose.Types.ObjectId.isValid(req.company.id)) {
+  if (!mongoose.Types.ObjectId.isValid(req.company.id._id)) {
     return res
       .status(400)
       .json({ success: false, message: "Invalid companyId format" });
@@ -24,7 +23,7 @@ export const registerUser = asyncHandler(async (req, res) => {
   if (existingUser) {
     return res.status(400).json({
       success: false,
-      message: "Email already in use",
+      message: "Email already registered",
     });
   }
 
@@ -42,7 +41,7 @@ export const registerUser = asyncHandler(async (req, res) => {
         }`;
 
   const user = new User({
-    companyId: req.company.id,
+    companyId: req.company.id._id,
     name,
     email: email.toLowerCase(),
     phone,
@@ -58,7 +57,7 @@ export const registerUser = asyncHandler(async (req, res) => {
 
   const employeeProfile = new EmployeeProfile({
     userId: user._id,
-    companyId: req.company.id,
+    companyId: req.company.id._id,
     name,
     email: email.toLowerCase(),
     phone,
@@ -88,7 +87,9 @@ export const loginUser = asyncHandler(async (req, res) => {
     });
   }
 
-  const existingUser = await User.findOne({ email: email.toLowerCase() });
+  const existingUser = await User.findOne({
+    email: email.toLowerCase(),
+  }).populate({ path: "companyId", select: "name" });
   if (!existingUser) {
     return res.status(400).json({
       success: false,
@@ -116,6 +117,7 @@ export const loginUser = asyncHandler(async (req, res) => {
       email: existingUser.email,
       role: existingUser.role,
       profilePic: existingUser.profileImage,
+      companyName: existingUser.companyId.name,
     },
     message: "User login successfully",
   });

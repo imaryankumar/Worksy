@@ -8,30 +8,31 @@ const EmployeeCard = ({ userCount }) => {
     {
       id: 1,
       icon: <Users size={24} className="text-primary" />,
-      count: userCount?.totalEmployCount || 0,
+      count: userCount?.total || 0,
       label: "Total Employee",
       bgColor: "bg-[#F5F1FF]",
     },
+
     {
       id: 2,
-      icon: <UserPlus size={24} className="text-primary" />,
-      count: userCount?.recentCount || 0,
-      label: "New Employee",
-      bgColor: "bg-[#FDF3EC]",
-    },
-    {
-      id: 3,
       icon: <UserCheck size={24} className="text-primary" />,
-      count: userCount?.maleCount || 0,
+      count: userCount?.male || 0,
       label: "Male",
       bgColor: "bg-[#E0F5EE]",
     },
     {
-      id: 4,
+      id: 3,
       icon: <UserMinus size={24} className="text-primary" />,
-      count: userCount?.femaleCount || 0,
+      count: userCount?.female || 0,
       label: "Female",
       bgColor: "bg-[#EBF0FF]",
+    },
+    {
+      id: 4,
+      icon: <UserPlus size={24} className="text-primary" />,
+      count: userCount?.latest || 0,
+      label: "New Employee",
+      bgColor: "bg-[#FDF3EC]",
     },
   ];
 

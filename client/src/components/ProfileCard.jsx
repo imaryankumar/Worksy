@@ -13,18 +13,19 @@ import { HoverCardContent, HoverCardTrigger } from "./ui/hover-card";
 import { DateFormat } from "@/lib/DateFormat";
 
 const ProfileCard = ({ isLoading, isError, data }) => {
+  console.log("Data", data);
   const onHandleCopy = (text) => {
     if (!text) return;
     navigator.clipboard.writeText(text);
     toast.success("Copied to clipboard!", { id: "text-copy" });
   };
 
-  const employees = data?.allDetails?.employees || [];
-  const employeeCount = employees.length || 10;
+  const employees = data?.employees || [];
+  const employeeCount = data?.totalCount?.total || 10;
 
   if (isError) {
     return (
-      <p className="text-red-500 text-center w-full mt-4">
+      <p className="text-red-500 font-bold text-lg text-center w-full mt-4">
         Something went wrong. Please try again.
       </p>
     );
@@ -36,7 +37,7 @@ const ProfileCard = ({ isLoading, isError, data }) => {
         Array.from({ length: employeeCount }).map((_, index) => (
           <Card
             key={index}
-            className="w-full h-72 shadow-md border border-gray-200 animate-pulse"
+            className="w-full h-80 shadow-md !border-none bg-gray-200 animate-pulse"
           >
             <CardContent className="flex flex-col items-center justify-start gap-4 p-6 w-full h-full">
               <Skeleton className="w-16 h-16 rounded-full" />
@@ -52,7 +53,7 @@ const ProfileCard = ({ isLoading, isError, data }) => {
         employees.map((employee) => (
           <Card
             key={employee._id}
-            className="w-full shadow-md hover:shadow-lg border border-gray-200 transition-shadow duration-300 relative"
+            className="w-full shadow-md hover:shadow-lg !border-none bg-gray-100 border-gray-200 transition-shadow duration-300 relative !py-0"
           >
             {employee.status && (
               <span
@@ -65,27 +66,27 @@ const ProfileCard = ({ isLoading, isError, data }) => {
                 {employee.status}
               </span>
             )}
-            <CardContent className="p-6 flex flex-col items-center gap-4">
+            <CardContent className="p-5 flex flex-col items-center gap-4">
               <img
-                src={employee.profilePic}
-                alt={`${employee.fullName}'s profile`}
-                className="w-16 h-16 rounded-full object-cover border"
+                src={employee?.userId?.profileImage}
+                alt={`${employee?.userId?.name}'s profile`}
+                className="w-16 h-16 rounded-full object-cover border !border-gray-300"
               />
               <div className="text-center flex flex-col gap-1">
-                <h3 className="text-lg font-bold">{employee.fullName}</h3>
+                <h3 className="text-lg font-bold">{employee?.userId?.name}</h3>
                 <p className="text-sm text-gray-600 px-2 py-0.5 rounded-full bg-slate-200">
-                  {employee.designation}
+                  {employee?.designation}
                 </p>
               </div>
 
               <div className="text-sm flex flex-col gap-1 w-full text-gray-700">
                 <div className="flex justify-between w-full">
                   <span>EmployeeId:</span>
-                  <span>{employee.employeeId}</span>
+                  <span>{employee?.employeeCode}</span>
                 </div>
                 <div className="flex justify-between w-full">
                   <span>Join Date:</span>
-                  <span>{DateFormat(employee.dateOfJoining)}</span>
+                  <span>{DateFormat(employee?.joinDate)}</span>
                 </div>
               </div>
 
@@ -93,16 +94,16 @@ const ProfileCard = ({ isLoading, isError, data }) => {
                 {/* Phone */}
                 <HoverCard>
                   <HoverCardTrigger asChild>
-                    <button className="p-2 rounded-xl border bg-gray-200 hover:bg-gray-300 transition-colors">
+                    <button className="p-3 rounded-xl cursor-pointer shadow bg-white transition-colors">
                       <PhoneCall />
                     </button>
                   </HoverCardTrigger>
-                  <HoverCardContent className="flex gap-2 items-center">
-                    <span>{employee.phoneNumber}</span>
+                  <HoverCardContent className="flex gap-2 items-center bg-gray-200 !border-none w-auto">
+                    <span>{employee?.userId?.phone}</span>
                     <CopyIcon
                       size={18}
                       className="cursor-pointer"
-                      onClick={() => onHandleCopy(employee.phoneNumber)}
+                      onClick={() => onHandleCopy(employee?.userId?.phone)}
                     />
                   </HoverCardContent>
                 </HoverCard>
@@ -110,28 +111,28 @@ const ProfileCard = ({ isLoading, isError, data }) => {
                 {/* Role */}
                 <HoverCard>
                   <HoverCardTrigger asChild>
-                    <button className="p-2 rounded-xl border bg-gray-200 hover:bg-gray-300 transition-colors">
+                    <button className="p-3 rounded-xl cursor-pointer shadow bg-white transition-colors">
                       <BookTypeIcon />
                     </button>
                   </HoverCardTrigger>
-                  <HoverCardContent>
-                    <span>{employee.role}</span>
+                  <HoverCardContent className="flex gap-2 items-center bg-gray-200 !border-none w-auto">
+                    <span>{employee?.userId?.role}</span>
                   </HoverCardContent>
                 </HoverCard>
 
                 {/* Email */}
                 <HoverCard>
                   <HoverCardTrigger asChild>
-                    <button className="p-2 rounded-xl border bg-gray-200 hover:bg-gray-300 transition-colors">
+                    <button className="p-3 rounded-xl cursor-pointer shadow bg-white transition-colors">
                       <MailIcon />
                     </button>
                   </HoverCardTrigger>
-                  <HoverCardContent className="flex gap-2 items-center">
-                    <span>{employee.email}</span>
+                  <HoverCardContent className="flex gap-2 items-center bg-gray-200 !border-none w-auto">
+                    <span>{employee?.userId?.email}</span>
                     <CopyIcon
                       size={18}
                       className="cursor-pointer"
-                      onClick={() => onHandleCopy(employee.email)}
+                      onClick={() => onHandleCopy(employee?.userId?.email)}
                     />
                   </HoverCardContent>
                 </HoverCard>

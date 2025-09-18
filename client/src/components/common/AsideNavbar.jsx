@@ -13,17 +13,17 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useDispatch, useSelector } from "react-redux";
+import { restoreUser } from "@/store/slices/authSlice/getAuthSlice";
 
 const AsideNavbar = () => {
   const pathname = usePathname().replace("/", "");
-  const [user, setUser] = useState(null);
 
+  const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.auth);
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
-  }, []);
+    dispatch(restoreUser());
+  }, [dispatch]);
 
   const routes = [
     { id: 1, label: "Overview", url: "overview", icon: <PieChart size={22} /> },
@@ -52,7 +52,7 @@ const AsideNavbar = () => {
   return (
     <div className="flex flex-col justify-between h-full py-5">
       <div className="flex flex-col gap-10 items-center">
-        <div className="px-4">
+        <div className="px-6">
           <Image src={CONSTANTS?.LOGO} alt="Company Logo" priority />
         </div>
         <nav className="flex flex-col gap-3 w-full px-5">
