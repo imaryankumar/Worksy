@@ -8,7 +8,7 @@ export const getUserToken = async (userId, res) => {
   res.cookie("userToken", token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
     maxAge: 7 * 24 * 60 * 60 * 1000,
   });
   return token;
@@ -21,7 +21,7 @@ export const getCompanyToken = async (companyId, res) => {
   res.cookie("companyToken", token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
     maxAge: 7 * 24 * 60 * 60 * 1000,
   });
   return token;
