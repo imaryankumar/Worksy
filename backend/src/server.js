@@ -10,6 +10,7 @@ import connectDB from "./config/dbConnect.js";
 import userRoutes from "./routes/user.route.js";
 import companyRoutes from "./routes/company.route.js";
 import employeeRoutes from "./routes/employee.route.js";
+import leaveRoutes from "./routes/leave.route.js";
 
 const app = express();
 
@@ -48,6 +49,7 @@ app.use(
 app.use("/api/v1/companies", companyRoutes);
 app.use("/api/v1/user", userRoutes);
 app.use("/api/v1/employee", employeeRoutes);
+app.use("/api/v1/leave", leaveRoutes);
 
 // Sample route
 app.get("/", (req, res) => {

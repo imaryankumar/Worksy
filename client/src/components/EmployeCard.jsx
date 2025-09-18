@@ -40,7 +40,7 @@ const EmployeeCard = ({ userCount }) => {
     <div className="w-full flex flex-wrap gap-6">
       {employeeStats.map((item) => (
         <div key={item.id} className="flex-1 min-w-[200px]">
-          <Card className={`${item.bgColor} !py-5 shadow-none !border-none`}>
+          <Card className={`${item.bgColor} !py-4 shadow-none !border-none`}>
             <CardContent className="p-0">
               <div className="flex items-center gap-4 p-6 sm:p-8">
                 <span className="flex items-center justify-center text-xl bg-white rounded-full p-3 sm:p-4">
