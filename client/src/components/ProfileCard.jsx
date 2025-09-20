@@ -11,6 +11,7 @@ import { Skeleton } from "./ui/skeleton";
 import { HoverCard } from "@radix-ui/react-hover-card";
 import { HoverCardContent, HoverCardTrigger } from "./ui/hover-card";
 import { DateFormat } from "@/lib/DateFormat";
+import { da } from "date-fns/locale";
 
 const ProfileCard = ({ isLoading, isError, data }) => {
   console.log("Data", data);
@@ -57,10 +58,10 @@ const ProfileCard = ({ isLoading, isError, data }) => {
           >
             {employee.status && (
               <span
-                className={`absolute right-0 top-2 px-3 py-1 w-24 rounded-tl-lg rounded-bl-lg text-white text-sm font-medium ${
-                  employee.status === "Pending"
-                    ? "bg-orange-400"
-                    : "bg-green-500"
+                className={`absolute right-0 top-2 px-3 py-1 w-20 rounded-tl-lg rounded-bl-lg text-white text-sm font-medium ${
+                  employee?.userId?.status === "Approved"
+                    ? "bg-green-600"
+                    : "bg-red-600"
                 }`}
               >
                 {employee.status}
@@ -75,18 +76,18 @@ const ProfileCard = ({ isLoading, isError, data }) => {
               <div className="text-center flex flex-col gap-1">
                 <h3 className="text-lg font-bold">{employee?.userId?.name}</h3>
                 <p className="text-sm text-gray-600 px-2 py-0.5 rounded-full bg-slate-200">
-                  {employee?.designation}
+                  {employee?.designation || "No Designation"}
                 </p>
               </div>
 
               <div className="text-sm flex flex-col gap-1 w-full text-gray-700">
                 <div className="flex justify-between w-full">
                   <span>EmployeeId:</span>
-                  <span>{employee?.employeeCode}</span>
+                  <span>{employee?.employeeCode || "EMPO123"}</span>
                 </div>
                 <div className="flex justify-between w-full">
                   <span>Join Date:</span>
-                  <span>{DateFormat(employee?.joinDate)}</span>
+                  <span>{DateFormat(employee?.joinDate || "01-01-2025")}</span>
                 </div>
               </div>
 
@@ -99,7 +100,7 @@ const ProfileCard = ({ isLoading, isError, data }) => {
                     </button>
                   </HoverCardTrigger>
                   <HoverCardContent className="flex gap-2 items-center bg-gray-200 !border-none w-auto">
-                    <span>{employee?.userId?.phone}</span>
+                    <span>{employee?.userId?.phone || "6202012971"}</span>
                     <CopyIcon
                       size={18}
                       className="cursor-pointer"
@@ -142,7 +143,7 @@ const ProfileCard = ({ isLoading, isError, data }) => {
         ))
       ) : (
         <p className="text-gray-500 text-center col-span-full mt-4">
-          No employees found.
+          We couldn’t find any employee with that information.
         </p>
       )}
     </div>

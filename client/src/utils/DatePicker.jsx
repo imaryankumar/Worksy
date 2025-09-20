@@ -34,7 +34,7 @@ const DatePicker = ({
       <PopoverTrigger asChild>
         <Button
           variant="outline"
-          className={`${width} justify-start text-left font-normal ${
+          className={`${width} bg-white justify-start text-left font-normal ${
             !date && "text-muted-foreground"
           }`}
         >
@@ -42,12 +42,15 @@ const DatePicker = ({
           {date ? formatDate(date) : <span>{placeholder}</span>}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-auto p-0" align="start">
+      <PopoverContent
+        className="w-auto p-0 bg-white !border-none outline-none"
+        align="start"
+      >
         <Calendar
           mode="single"
           selected={date}
           onSelect={handleDateChange}
-          className="rounded-md border shadow"
+          className="rounded-md border cursor-pointer shadow bg-gray-300"
           initialFocus
         />
       </PopoverContent>

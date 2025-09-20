@@ -86,55 +86,70 @@ export const GetLeaveRequests = asyncHandler(async (req, res) => {
     }
   }
 
-  // Get start and end of the specific day
-  const startOfDay = new Date(
-    selectedDate.getFullYear(),
-    selectedDate.getMonth(),
-    selectedDate.getDate(),
-    0,
-    0,
-    0
-  );
-  const endOfDay = new Date(
-    selectedDate.getFullYear(),
-    selectedDate.getMonth(),
-    selectedDate.getDate(),
-    23,
-    59,
-    59
-  );
+  // Get start and end of the specific day in UTC to avoid timezone issues
+  const startOfDay = new Date(selectedDate);
+  startOfDay.setHours(0, 0, 0, 0);
 
-  // Find leaves that overlap with the specific date
-  const leaves = await LeaveRequest.find({
-    companyId: req.company.id._id,
-    startDate: { $lte: endOfDay },
-    endDate: { $gte: startOfDay },
-  })
-    .populate("userId", "name email profileImage")
-    .populate("approvedByUserId", "name email")
-    .sort({ createdAt: -1 });
+  const endOfDay = new Date(selectedDate);
+  endOfDay.setHours(23, 59, 59, 999);
 
-  return res.status(200).json({
-    success: true,
-    leaves,
-    selectedDate: `${String(selectedDate.getDate()).padStart(2, "0")}-${String(
-      selectedDate.getMonth() + 1
-    ).padStart(2, "0")}-${selectedDate.getFullYear()}`,
-    totalLeaves: leaves.length,
-    message:
-      leaves.length > 0
-        ? `Found ${leaves.length} leave(s) on ${String(
-            selectedDate.getDate()
-          ).padStart(2, "0")}/${String(selectedDate.getMonth() + 1).padStart(
-            2,
-            "0"
-          )}/${selectedDate.getFullYear()}`
-        : `No leaves found on ${String(selectedDate.getDate()).padStart(
-            2,
-            "0"
-          )}/${String(selectedDate.getMonth() + 1).padStart(
-            2,
-            "0"
-          )}/${selectedDate.getFullYear()}`,
-  });
+  try {
+    // Find leaves that are active on the specific date
+    // A leave is active on a date if: startDate <= selectedDate <= endDate
+    const leaves = await LeaveRequest.find({
+      companyId: req.company.id._id,
+      $and: [
+        { startDate: { $lte: endOfDay } },
+        { endDate: { $gte: startOfDay } },
+      ],
+    })
+      .populate("userId", "name email profileImage role status phone")
+      .populate("approvedByUserId", "name email")
+      .sort({ createdAt: -1 });
+
+    // Optional: If you want to filter out duplicate employees (same employee, same date)
+    // and only show unique employees per day, uncomment the following:
+    /*
+    const uniqueLeaves = [];
+    const seenEmployees = new Set();
+    
+    for (const leave of leaves) {
+      const employeeId = leave.userId._id.toString();
+      if (!seenEmployees.has(employeeId)) {
+        seenEmployees.add(employeeId);
+        uniqueLeaves.push(leave);
+      }
+    }
+    
+    // Use uniqueLeaves instead of leaves in the response
+    */
+
+    const formattedDate = `${String(selectedDate.getDate()).padStart(
+      2,
+      "0"
+    )}-${String(selectedDate.getMonth() + 1).padStart(
+      2,
+      "0"
+    )}-${selectedDate.getFullYear()}`;
+
+    return res.status(200).json({
+      success: true,
+      allLeaves: {
+        employees: leaves,
+      },
+      selectedDate: formattedDate,
+      totalLeaves: leaves.length,
+      message:
+        leaves.length > 0
+          ? `Found ${leaves.length} leave(s) on ${formattedDate}`
+          : `No leaves found on ${formattedDate}`,
+    });
+  } catch (error) {
+    console.error("Error fetching leave requests:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Error fetching leave requests",
+      error: error.message,
+    });
+  }
 });
