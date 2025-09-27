@@ -113,7 +113,6 @@ const Leaves = () => {
     onError: (error) => {
       const errorMessage =
         error?.response?.data?.message || "Failed to submit leave application";
-      console.error("Leave submission error:", errorMessage);
       toast.error(errorMessage, {
         id: "leave-error",
       });
@@ -252,6 +251,7 @@ const Leaves = () => {
                           handleFormDataChange("startDate", date)
                         }
                         width="w-full"
+                        isShowDate={true}
                       />
                     </div>
 
@@ -265,6 +265,7 @@ const Leaves = () => {
                           handleFormDataChange("endDate", date)
                         }
                         width="w-full"
+                        isShowDate={true}
                       />
                     </div>
 

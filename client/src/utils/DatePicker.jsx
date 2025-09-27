@@ -28,6 +28,7 @@ const DatePicker = ({
   handleDateChange,
   width = "w-[240px]",
   placeholder = "Pick a date",
+  isShowDate = false,
 }) => {
   return (
     <Popover>
@@ -52,6 +53,7 @@ const DatePicker = ({
           onSelect={handleDateChange}
           className="rounded-md border cursor-pointer shadow bg-gray-300"
           initialFocus
+          disabled={isShowDate ? { before: new Date() } : undefined}
         />
       </PopoverContent>
     </Popover>
